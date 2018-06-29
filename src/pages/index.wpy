@@ -1,0 +1,200 @@
+<style lang="less">
+  .swiper{
+    width: 100%;
+    height: 500rpx;
+  }
+
+  .swiper .slide-image{
+    width: 100%;
+  }
+
+  .starbucks-btn{
+    appearance: none;
+    width: 365rpx;
+    height: 100rpx;
+    border: 0;
+    border-radius: 50rpx;
+    -webkit-box-shadow:0px 0px 10px #e0e0e0;
+    box-shadow:0px 0px 10px #e0e0e0;
+    background-color: #fff;
+    margin-top: 50rpx;
+    margin-bottom: 50rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  button::after{
+    border: none;
+  }
+
+  .starbucks-btn .newImage{
+    width: 54rpx;
+    height: 39rpx;
+
+  }
+  .starbucks-btn text{
+    flex: 1;
+    color: #239064;
+    font-size: 26rpx;
+    letter-spacing: 4rpx;
+  }
+
+  .title{
+    font-size: 30rpx;
+    padding-left: 40rpx;
+    letter-spacing: 4rpx;
+  }
+
+  .sbList{
+
+    margin-top: 22rpx;
+    background-color: #f9f9f9;
+
+  }
+  .starbucks-list{
+    height: 253rpx;
+    width: 316rpx;
+    background-color: #fff;
+    margin-bottom: 60rpx;
+    border-radius: 15rpx;
+    -webkit-box-shadow:0px 2px 8px #858585;
+    box-shadow:0px 2px 8px #858585;
+
+  }
+  .starbucks-list:nth-child(n){
+    float: left;
+    margin-left: 40rpx;
+  }
+  .starbucks-list:nth-child(2n){
+    float: right;
+    margin-left: 0;
+    margin-right: 40rpx;
+  }
+
+  .starbucks-list image{
+    width: 315rpx;
+    height: 189rpx;
+    border-radius: 15rpx;
+  }
+
+  .starbucks-list text{
+    font-size: 23rpx;
+    text-align: center;
+    display: block;
+    margin: 7rpx auto;
+    letter-spacing: 5rpx;
+  }
+
+  .starbucks-foot{
+    background-color: #f9f9f9;
+    height: 245rpx;
+    width: 100%;
+  }
+
+  .starbucks-foot .cole-img{
+    position: relative;
+    background-color: #fff;
+    width: 87rpx;
+    height: 87rpx;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto;
+    -webkit-box-shadow:0px 0px 5px #858585;
+    box-shadow:0px 0px 5px #858585;
+  }
+
+  .starbucks-foot image{
+    position: absolute;
+    left: 4rpx;
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 40rpx;
+  }
+
+  .starbucks-foot .text{
+    width: 100rpx;
+    height: 60rpx;
+    text-align: center;
+    display: block;
+    margin:0 auto;
+    margin-top: 10rpx;
+  }
+
+  .starbucks-foot text{
+    font-size: 23rpx;
+    color: #299e6d;
+    text-decoration: underline;
+  }
+</style>
+
+<template>
+  <scroll-view scroll-y class="starbucks-container">
+    <swiper class="swiper" indicator-dots="true" autoplay="true" interval="3000" duration="1000" circular="true">
+      <block wx:for="{{picture}}"  wx:for-index="index" wx:key="{{index}}">
+        <swiper-item>
+          <image src="{{item.url}}" data-page="{{item.page}}" class="slide-image" bindtap="imageto" />
+        </swiper-item>
+      </block>
+    </swiper>
+      <button class="starbucks-btn" bindtap="buttonTo">
+        <image class="newImage" src="{{newImage}}" />
+        <text>{{newTitle}}</text>
+      </button>
+    <text class="title">咖啡+祝福 即刻表心意</text>
+
+    <scroll-view class="sbList">
+      <view class="starbucks-list" wx:for="{{List}}" data-title="{{item.title}}"  data-page="{{item.page}}" wx:key="{{item.page}}" bindtap="shoppingCart">
+          <image src="{{item.img}}" />
+          <text>{{item.title}}</text>
+      </view>
+    </scroll-view>
+
+    <view class="starbucks-foot">
+      <view class="cole-img">
+        <navigator hover-class="none" url="../../pages/history/history">
+          <image src="{{bzimg}}" />
+        </navigator>
+      </view>
+      <view class="text">
+        <navigator hover-class="none" class="nav" url="../../pages/history/history">
+          <text>购买历史</text>
+        </navigator>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '星巴克用心说'
+    }
+
+    data = {
+      picture: [
+        {url: '/images/ff.jpg', page: '1'},
+        {url: '/images/kv-dumpling.jpg', page: '8'}
+      ],
+      newTitle: '星冰粽沁甜上市',
+      newImage: '/images/wml.png',
+      bzimg: '/images/kele.png',
+      List: []
+    }
+
+    methods = {
+
+    }
+
+    async onLoad() {
+      let cardResponse = await wepy.request('https://www.easy-mock.com/mock/5adecfefc57e6f08ff16594b/example/starbucks')
+
+      this.List = cardResponse.data.data.List
+      this.$apply()
+    }
+  }
+</script>

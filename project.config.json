@@ -1,0 +1,15 @@
+{
+	"description": "weapp card project",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"appid": "wx3e9d7b14aacf3e55",
+	"projectname": "weapp-card",
+	"miniprogramRoot": "./dist",
+	"condition": {}
+}
