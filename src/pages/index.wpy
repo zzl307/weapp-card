@@ -131,23 +131,23 @@
 <template>
   <scroll-view scroll-y class="starbucks-container">
     <swiper class="swiper" indicator-dots="true" autoplay="true" interval="3000" duration="1000" circular="true">
-      <block wx:for="{{picture}}"  wx:for-index="index" wx:key="{{index}}">
+      <block wx:for="{{picture}}"  wx:for-index="index" wx:key="{{ index }}">
         <swiper-item>
-          <image src="{{item.url}}" data-page="{{item.page}}" class="slide-image" bindtap="imageto" />
+          <image src="{{ item.url }}" data-page="{{ item.page }}" class="slide-image" @tap="imageto({{ item.page }})"></image>
         </swiper-item>
       </block>
     </swiper>
-      <button class="starbucks-btn" bindtap="buttonTo">
-        <image class="newImage" src="{{newImage}}" />
-        <text>{{newTitle}}</text>
+      <button class="starbucks-btn" @tap="buttonTo">
+        <image class="newImage" src="{{ newImage }}" />
+        <text>{{ newTitle }}</text>
       </button>
     <text class="title">咖啡+祝福 即刻表心意</text>
 
     <scroll-view class="sbList">
-      <view class="starbucks-list" wx:for="{{List}}" data-title="{{item.title}}"  data-page="{{item.page}}" wx:key="{{item.page}}" bindtap="shoppingCart">
-          <image src="{{item.img}}" />
-          <text>{{item.title}}</text>
-      </view>
+      <navigator class="starbucks-list" wx:for="{{ List }}" data-title="{{ item.title }}"  data-page="{{ item.page }}" wx:key="{{ item.page }}" url="/pages/shopping?page={{ item.page }}">
+          <image src="{{ item.img }}" />
+          <text>{{ item.title }}</text>
+      </navigator>
     </scroll-view>
 
     <view class="starbucks-foot">
@@ -187,7 +187,21 @@
     }
 
     methods = {
-
+      imageto(page) {
+        // if (page === '8') {
+        //   wepy.navigateTo({
+        //     url: '/pages/push/push?page'
+        //   })
+        // }
+        wepy.navigateTo({
+          url: '/pages/shopping?page=' + page
+        })
+      },
+      buttonTo() {
+        wepy.navigateTo({
+          url: '/pages/index'
+        })
+      }
     }
 
     async onLoad() {
