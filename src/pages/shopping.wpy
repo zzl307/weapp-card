@@ -409,39 +409,33 @@
 </style>
 
 <template>
-  <scroll-view scroll-y="{{scrolly}}" class="starbucks-container">
+  <scroll-view scroll-y="{{ scrolly }}" class="starbucks-container">
     <view class="title-pic">
-        <image src="{{titlePic}}" />
+        <image src="{{ titlePic }}"></image>
     </view>
 
-    <scroll-view scroll-x="{{scrollx}}" class="list-pic">
-        <view class="picture" wx:for="{{listPic}}" wx:key="{{index}}">
-            <image class="{{id==item.id?'check':''}}" data-id="{{item.id}}" data-url="{{item.url}}" src="{{item.url}}" bindtap="showChoose"
-            />
-            <image wx:if="{{id==item.id}}" class="goupic" data-id="{{item.id}}" src="{{goupic}}" />
+    <scroll-view scroll-x="{{ scrollx }}" class="list-pic">
+        <view class="picture" wx:for="{{ listPic }}" wx:key="{{ index }}">
+            <image class="{{ id == item.id ? 'check' : '' }}" data-id="{{ item.id }}" data-url="{{ item.url }}" src="{{ item.url }}" @tap="showChoose({{ item.id }}, {{ item.url }})"></image>
+            <image wx:if="{{ id == item.id }}" class="goupic" data-id="{{ item.id }}" src="{{ goupic }}"></image>
         </view>
     </scroll-view>
 
     <text class="choice">选择商品</text>
 
-    <view class="starbucks-list" wx:for="{{starbucksList}}" wx:key="{{index}}">
-        <image bindtap="checkDrink" data-imgnum="{{item.imgnum}}" class="drinkImg" src="{{item.url}}" />
-        <text class="description">{{item.name}}</text>
-        <text class="price">￥{{item.price}}</text>
-
-        <view class="addNum" bindtap="addNumber" data-index="{{index}}" data-status="{{item.status}}">
-
-            <image wx:if="{{item.num!=0}}" src="{{delNum1}}" />
-            <image wx:else="" src="{{addNum}}" />
+    <view class="starbucks-list" wx:for="{{ starbucksList }}" wx:key="{{ index }}">
+        <image @tap="checkDrink({{ item.imgnum }})" data-imgnum="{{ item.imgnum }}" class="drinkImg" src="{{ item.url }}" />
+        <text class="description">{{ item.name }}</text>
+        <text class="price">￥{{ item.price }}</text>
+        <view class="addNum" @tap="addNumber({{ index }}, {{ item.status }})" data-index="{{ index }}" data-status="{{ item.status }}">
+            <image wx:if="{{ item.num != 0 }}" src="{{ delNum1 }}"></image>
+            <image wx:else="" src="{{ addNum }}"></image>
         </view>
-        <view wx:if="{{item.num!=0 }}" data-index="{{index}}" class="delNum {{item.num==0?'out':''}}" bindtap="delNumber"
-            data-status="{{item.status}}">
-            <image src="{{delNum}}" />
+        <view wx:if="{{ item.num!=0 }}" data-index="{{ index }}" class="delNum {{ item.num == 0 ? 'out' : '' }}" @tap="delNumber({{ index }}, {{ item.status }})" data-status="{{ item.status }}">
+            <image src="{{ delNum }}"></image>
         </view>
-
-        <text wx:if="{{item.num!=0 }}" class="listNum {{item.num==0?'out':''}}">{{starbucksList[index].num}}</text>
-
-        <view wx:if="{{item.num!=0 }}" class="xiabiao {{item.num==0?'out':''}}"></view>
+        <text wx:if="{{ item.num != 0 }}" class="listNum {{ item.num == 0 ? 'out' : '' }}">{{ starbucksList[index].num }}</text>
+        <view wx:if="{{ item.num != 0 }}" class="xiabiao {{ item.num == 0 ? 'out' : '' }}"></view>
     </view>
 
     <view class="makeknow">
@@ -456,41 +450,39 @@
     <view class="dianzi"></view>
 
     <view class="starbucks-foot">
-        <text class="number">{{number}}份礼品</text>
-        <text class="money">￥{{money}}.00</text>
-        <button class="buy" disabled="{{disabled}}" bindtap="buySomething">购买</button>
+        <text class="number">{{ number }} 份礼品</text>
+        <text class="money">￥{{ money }}.00</text>
+        <button class="buy" disabled="{{ disabled }}" @tap="buySomething">购买</button>
     </view>
 
-    <view class="introduce {{checkxx?'out':''}}">
-        <view class="chaxxx" bindtap="chaxx"></view>
+    <view class="introduce {{ checkxx ? 'out' : '' }}">
+        <view class="chaxxx" @tap="chaxx"></view>
         <view class="jspic">
-            <image src="{{picimg}}" />
+            <image src="{{ picimg }}"></image>
         </view>
         <view scroll-y class="jieshao">
-
             <!-- <view class="dianzi2"> -->
-            <image class="cha" bindtap="chaxx" src='../../images/cha.png' />
+            <image class="cha" @tap="chaxx" src='../../images/cha.png' />
             <!-- </view> -->
-            <scroll-view scroll-y class="introduce-box" data-index="{{index}}">
-                <text class="thename">{{thename}}</text>
-                <text class="themoney">￥{{themoney}}</text>
+            <scroll-view scroll-y class="introduce-box" data-index="{{ index }}">
+                <text class="thename">{{ thename }}</text>
+                <text class="themoney">￥{{ themoney }}</text>
                 <view class="thedoor">适用门店：
-                    <text class="all" bindtap="moredoors">查看全部门店</text>
+                    <text class="all" @tap="moredoors">查看全部门店</text>
                 </view>
                 <view class="thetime">可用时段：
-                    <text class="time">{{thetime}}</text>
+                    <text class="time">{{ thetime }}</text>
                 </view>
                 <view class="make-box">
                     <text class="themake">使用须知：</text>
                     <text class="make">
-                        {{themake}}
+                        {{ themake }}
                     </text>
                 </view>
                 <scroll-view class="dianzi4"></scroll-view>
             </scroll-view>
             <view class="dianzi3"></view>
         </view>
-
     </view>
   </scroll-view>
 </template>
@@ -531,7 +523,120 @@
     }
 
     methods = {
+      showChoose(id, url) {
+        this.titlePic = url
+        this.id = id
+        this.$apply()
+      },
+      async checkDrink(imgnum) {
+        let res = await wepy.request('https://www.easy-mock.com/mock/5adecfefc57e6f08ff16594b/example/starbucks')
+        const picimg = res.data.data.starbucksList[imgnum].url
+        const thename = res.data.data.starbucksList[imgnum].name
+        const price = Number(res.data.data.starbucksList[imgnum].price)
+        const introduce = this.data.introduce
+        const thetime = introduce[imgnum].thetime
+        const themake = introduce[imgnum].themake
 
+        this.picimg = picimg
+        this.thename = thename
+        this.themoney = price
+        this.thetime = thetime
+        this.themake = themake
+        this.checkxx = false
+        this.scrolly = false
+        this.scrollx = false
+        this.$apply()
+      },
+      addNumber(index, status) {
+        let money = this.data.money
+        let number = this.data.number
+        let price = Number(this.data.starbucksList[index].price)
+        let starbucksList = this.data.starbucksList
+        let num = Number(this.data.starbucksList[index].num)
+        let url = this.data.starbucksList[index].url
+        let name = this.data.starbucksList[index].name
+        num++
+        number++
+        this.data.starbucksList[index].num = num
+        money += price
+        const shuju = {num, price, url, name}
+        const array = this.data.array
+        array[index] = shuju
+        wepy.setStorageSync('key', array)
+        this.array = array
+        this.status = status
+        this.starbucksList = starbucksList
+        this.number = number
+        this.money = money
+        this.$apply()
+        this.hasNumber()
+      },
+      delNumber(index, status) {
+        let money = this.data.money
+        let number = this.data.number
+        let price = Number(this.data.starbucksList[index].price)
+        let starbucksList = this.data.starbucksList
+        let num = Number(this.data.starbucksList[index].num)
+        let url = this.data.starbucksList[index].url
+        let name = this.data.starbucksList[index].name
+        num--
+        number--
+        this.data.starbucksList[index].num = num
+        money = money - price
+        const shuju = {num, price, url, name}
+        const array = this.data.array
+        array[index] = shuju
+
+        if (num === 0) {
+          array.splice(index, 1, null)
+        }
+
+        wepy.setStorageSync('key', array)
+        this.array = array
+        this.status = status
+        this.starbucksList = starbucksList
+        this.number = number
+        this.money = money
+        this.$apply()
+        this.hasNumber()
+      },
+      buySomething() {
+        wepy.showToast({
+          title: '购买成功',
+          icon: 'success',
+          duration: 2000
+        })
+        setTimeout(function() {
+          wepy.redirectTo({
+            url: '/pages/index'
+          })
+        }, 1500)
+      },
+      chaxx() {
+        this.checkxx = true
+        this.picimg = ''
+        this.thename = ''
+        this.themoney = ''
+        this.thetime = ''
+        this.themake = ''
+        this.scrolly = true
+        this.scrollx = true
+        this.$apply()
+      },
+      moredoors() {
+        wepy.navigateTo({
+          url: '/pages/index'
+        })
+      }
+    }
+
+    hasNumber() {
+      let number = this.data.number
+      if (number === 0) {
+        this.disabled = true
+      } else if (number !== 0) {
+        this.disabled = false
+      }
     }
 
     async onLoad(options) {
