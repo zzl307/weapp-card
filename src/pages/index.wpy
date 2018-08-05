@@ -144,8 +144,8 @@
     <text class="title">咖啡+祝福 即刻表心意</text>
 
     <scroll-view class="sbList">
-      <navigator class="starbucks-list" wx:for="{{ List }}" data-title="{{ item.title }}"  data-page="{{ item.page }}" wx:key="{{ item.page }}" url="/pages/shopping?page={{ item.page }}">
-          <image src="{{ item.img }}" />
+      <navigator class="starbucks-list" wx:for="{{ List }}" data-title="{{ item.title }}"  data-page="" wx:key="" url="/pages/shopping?page=">
+          <image src="{{ item.theme_pic_url }}" />
           <text>{{ item.title }}</text>
       </navigator>
     </scroll-view>
@@ -169,6 +169,7 @@
 
 <script>
   import wepy from 'wepy'
+  import api from '@/utils/api'
 
   export default class Index extends wepy.page {
     config = {
@@ -187,28 +188,45 @@
     }
 
     methods = {
-      imageto(page) {
-        // if (page === '8') {
-        //   wepy.navigateTo({
-        //     url: '/pages/push/push?page'
-        //   })
-        // }
-        wepy.navigateTo({
-          url: '/pages/shopping?page=' + page
-        })
-      },
-      buttonTo() {
-        wepy.navigateTo({
-          url: '/pages/index'
-        })
-      }
+      // imageto(page) {
+      // if (page === '8') {
+      //   wepy.navigateTo({
+      //     url: '/pages/push/push?page'
+      //   })
+      // }
+      // wepy.navigateTo({
+      //   url: '/pages/shopping?page=' + page
+      // })
+    }
+      // buttonTo() {
+      //   // wepy.navigateTo({
+      //   //   url: '/pages/index'
+      //   // })
+      // }
+
+    async getPage() {
+      // try {
+        // 获取礼品卡
+      let PagesResponse = await api.request({
+        url: 'weapp/giftCard'
+      })
+      let List = PagesResponse.data.page.theme_list
+
+      console.log(List)
+      this.List = List
+      this.$apply()
+      // }
+    }
+
+    async onShow() {
+      // 每次打开页面，获取当前用户信息
+      this.user = await this.$parent.getCurrentUser()
+      console.log(this.user)
+      this.$apply()
     }
 
     async onLoad() {
-      let cardResponse = await wepy.request('https://www.easy-mock.com/mock/5adecfefc57e6f08ff16594b/example/starbucks')
-
-      this.List = cardResponse.data.data.List
-      this.$apply()
+      this.getPage()
     }
   }
 </script>
