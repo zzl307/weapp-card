@@ -17,8 +17,8 @@ import api from '@/utils/api'
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index'
-      // 'pages/shopping'
+      'pages/index',
+      'pages/shopping'
     ],
     window: {
       backgroundTextStyle: 'light',

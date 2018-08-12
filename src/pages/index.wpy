@@ -47,7 +47,6 @@
   }
 
   .sbList{
-
     margin-top: 22rpx;
     background-color: #f9f9f9;
 
@@ -131,23 +130,26 @@
 <template>
   <scroll-view scroll-y class="starbucks-container">
     <swiper class="swiper" indicator-dots="true" autoplay="true" interval="3000" duration="1000" circular="true">
-      <block wx:for="{{picture}}"  wx:for-index="index" wx:key="{{ index }}">
+      <!-- <block wx:for="{{ page }}"  wx:for-index="index" wx:key="{{ index }}"> -->
         <swiper-item>
-          <image src="{{ item.url }}" data-page="{{ item.page }}" class="slide-image" @tap="imageto({{ item.page }})"></image>
+          <image src="{{ page.banner_pic_url }}" data-page="{{ page.biz_description }}" class="slide-image" @tap="imageto()"></image>
         </swiper-item>
-      </block>
+      <!-- </block> -->
     </swiper>
-      <button class="starbucks-btn" @tap="buttonTo">
-        <image class="newImage" src="{{ newImage }}" />
-        <text>{{ newTitle }}</text>
-      </button>
+
+    <button class="starbucks-btn" @tap="buttonTo">
+      <image class="newImage" src="{{ newImage }}" />
+      <text>{{ newTitle }}</text>
+    </button>
     <text class="title">咖啡+祝福 即刻表心意</text>
 
     <scroll-view class="sbList">
-      <navigator class="starbucks-list" wx:for="{{ List }}" data-title="{{ item.title }}"  data-page="" wx:key="" url="/pages/shopping?page=">
-          <image src="{{ item.theme_pic_url }}" />
-          <text>{{ item.title }}</text>
-      </navigator>
+      <repeat for="{{ themes }}" key="id" index="index" item="theme">
+        <navigator class="starbucks-list" url="/pages/shopping?id={{ theme.id }}">
+          <image src="{{ theme.theme_pic_url }}" />
+          <text>{{ theme.title }}</text>
+        </navigator>
+      </repeat>
     </scroll-view>
 
     <view class="starbucks-foot">
@@ -165,8 +167,6 @@
   </scroll-view>
 </template>
 
-
-
 <script>
   import wepy from 'wepy'
   import api from '@/utils/api'
@@ -177,14 +177,11 @@
     }
 
     data = {
-      picture: [
-        {url: '/images/ff.jpg', page: '1'},
-        {url: '/images/kv-dumpling.jpg', page: '8'}
-      ],
+      page: [],
+      themes: [],
       newTitle: '星冰粽沁甜上市',
       newImage: '/images/wml.png',
-      bzimg: '/images/kele.png',
-      List: []
+      bzimg: '/images/kele.png'
     }
 
     methods = {
@@ -205,17 +202,29 @@
       // }
 
     async getPage() {
-      // try {
+      try {
         // 获取礼品卡
-      let PagesResponse = await api.request({
-        url: 'weapp/giftCard'
-      })
-      let List = PagesResponse.data.page.theme_list
+        let pagesResponse = await api.request({
+          url: 'weapp/giftCard',
+          data: {
+            include: 'theme'
+          }
+        })
+        if (pagesResponse.statusCode === 200) {
+          let page = pagesResponse.data
+          let themes = page.theme.data
 
-      console.log(List)
-      this.List = List
-      this.$apply()
-      // }
+          this.page = page
+          this.themes = themes
+          this.$apply()
+        }
+      } catch (err) {
+        console.log(err)
+        wepy.showModal({
+          title: '提示',
+          content: '服务器错误，请联系管理员'
+        })
+      }
     }
 
     async onShow() {

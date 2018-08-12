@@ -415,26 +415,26 @@
     </view>
 
     <scroll-view scroll-x="{{ scrollx }}" class="list-pic">
-        <view class="picture" wx:for="{{ listPic }}" wx:key="{{ index }}">
-            <image class="{{ id == item.id ? 'check' : '' }}" data-id="{{ item.id }}" data-url="{{ item.url }}" src="{{ item.url }}" @tap="showChoose({{ item.id }}, {{ item.url }})"></image>
-            <image wx:if="{{ id == item.id }}" class="goupic" data-id="{{ item.id }}" src="{{ goupic }}"></image>
-        </view>
+      <view class="picture" wx:for="{{ listPic }}" wx:key="{{ index }}">
+        <image class="{{ id == item.id ? 'check' : '' }}" data-id="{{ item.id }}" data-url="{{ item.background_pic_url }}" src="{{ item.background_pic_url }}" @tap="showChoose({{ item.id }}, {{ item.background_pic_url }})"></image>
+        <image wx:if="{{ id == item.id }}" class="goupic" data-id="{{ item.id }}" src="{{ goupic }}"></image>
+      </view>
     </scroll-view>
 
     <text class="choice">选择商品</text>
 
-    <view class="starbucks-list" wx:for="{{ starbucksList }}" wx:key="{{ index }}">
-        <image @tap="checkDrink({{ item.imgnum }})" data-imgnum="{{ item.imgnum }}" class="drinkImg" src="{{ item.url }}" />
-        <text class="description">{{ item.name }}</text>
-        <text class="price">￥{{ item.price }}</text>
-        <view class="addNum" @tap="addNumber({{ index }}, {{ item.status }})" data-index="{{ index }}" data-status="{{ item.status }}">
+    <view class="starbucks-list" wx:for="{{ items }}" wx:key="{{ index }}">
+        <image @tap="checkDrink({{ index }})" data-imgnum="{{ index }}" class="drinkImg" src="{{ item.pic_url }}" />
+        <text class="description">{{ item.title }}</text>
+        <text class="price">￥{{ item.card[0].price }}</text>
+        <view class="addNum" @tap="addNumber({{ index }}, {{ item.card[0].quantity }}, {{ item.card[0].price }})" data-index="{{ index }}" data-status="{{ item.card[0].quantity }}">
             <image wx:if="{{ item.num != 0 }}" src="{{ delNum1 }}"></image>
             <image wx:else="" src="{{ addNum }}"></image>
         </view>
-        <view wx:if="{{ item.num!=0 }}" data-index="{{ index }}" class="delNum {{ item.num == 0 ? 'out' : '' }}" @tap="delNumber({{ index }}, {{ item.status }})" data-status="{{ item.status }}">
+        <view wx:if="{{ item.num!=0 }}" data-index="{{ index }}" class="delNum {{ item.num == 0 ? 'out' : '' }}" @tap="delNumber({{ index }}, {{ item.card[0].quantity }}, {{ item.card[0].price }})" data-status="{{ item.card[0].quantity }}">
             <image src="{{ delNum }}"></image>
         </view>
-        <text wx:if="{{ item.num != 0 }}" class="listNum {{ item.num == 0 ? 'out' : '' }}">{{ starbucksList[index].num }}</text>
+        <text wx:if="{{ item.num != 0 }}" class="listNum {{ item.num == 0 ? 'out' : '' }}">{{ items[index].num }}</text>
         <view wx:if="{{ item.num != 0 }}" class="xiabiao {{ item.num == 0 ? 'out' : '' }}"></view>
     </view>
 
@@ -489,10 +489,11 @@
 
 <script>
   import wepy from 'wepy'
+  import api from '@/utils/api'
 
   export default class Shopping extends wepy.page {
     config = {
-
+      navigationBarTitleText: ''
     }
 
     data = {
@@ -519,7 +520,43 @@
       starbucksList: [],
       introduce: [
         {thetime: '2018.05.27-2021.05.26', themake: '一任意季节限定特饮（大杯）饮料券；一此电子饮料券自购买之日起三年内有效一您可以在中国大陆境内任意星巴克门店（部分门店除外，详情请见 《 星巴克用星说社交礼品平台须知 》 ）兑换其出售的指定商品；一此电子饮料券为一次性使用产品，一旦兑换，即失效；一使用电子饮料券在门店消费时，同时出示有效星享卡累积星星。'}
-      ]
+      ],
+      theme: null,
+      items: []
+    }
+
+    // 获取主体结构
+    async getTheme(id) {
+      try {
+        let themeResponse = await api.request({
+          url: 'weapp/giftCard/' + id,
+          data: {
+            include: 'item,pic'
+          }
+        })
+
+        if (themeResponse.statusCode === 200) {
+          let theme = themeResponse.data
+          let listPic = theme.pic.data
+          let titlePic = theme.pic.data[0].background_pic_url
+          let items = theme.item.data
+
+          this.theme = theme
+          this.listPic = listPic
+          this.titlePic = titlePic
+          this.items = items
+          wepy.setNavigationBarTitle({
+            title: theme.title
+          })
+          this.$apply()
+        }
+      } catch (err) {
+        console.log(err)
+        wepy.showModal({
+          title: '提示',
+          content: '服务器错误，请联系管理员'
+        })
+      }
     }
 
     methods = {
@@ -547,17 +584,17 @@
         this.scrollx = false
         this.$apply()
       },
-      addNumber(index, status) {
+      addNumber(index, status, p) {
         let money = this.data.money
         let number = this.data.number
-        let price = Number(this.data.starbucksList[index].price)
-        let starbucksList = this.data.starbucksList
-        let num = Number(this.data.starbucksList[index].num)
-        let url = this.data.starbucksList[index].url
-        let name = this.data.starbucksList[index].name
+        let items = this.data.items
+        let price = Number(p)
+        let num = Number(this.data.items[index].num)
+        let url = this.data.items[index].pic_url
+        let name = this.data.items[index].title
         num++
         number++
-        this.data.starbucksList[index].num = num
+        this.data.items[index].num = num
         money += price
         const shuju = {num, price, url, name}
         const array = this.data.array
@@ -565,23 +602,23 @@
         wepy.setStorageSync('key', array)
         this.array = array
         this.status = status
-        this.starbucksList = starbucksList
+        this.items = items
         this.number = number
         this.money = money
         this.$apply()
         this.hasNumber()
       },
-      delNumber(index, status) {
+      delNumber(index, status, p) {
         let money = this.data.money
         let number = this.data.number
-        let price = Number(this.data.starbucksList[index].price)
-        let starbucksList = this.data.starbucksList
-        let num = Number(this.data.starbucksList[index].num)
-        let url = this.data.starbucksList[index].url
-        let name = this.data.starbucksList[index].name
+        let items = this.data.items
+        let price = Number(p)
+        let num = Number(this.data.items[index].num)
+        let url = this.data.items[index].pic_url
+        let name = this.data.items[index].title
         num--
         number--
-        this.data.starbucksList[index].num = num
+        this.data.items[index].num = num
         money = money - price
         const shuju = {num, price, url, name}
         const array = this.data.array
@@ -594,7 +631,7 @@
         wepy.setStorageSync('key', array)
         this.array = array
         this.status = status
-        this.starbucksList = starbucksList
+        this.items = items
         this.number = number
         this.money = money
         this.$apply()
@@ -640,17 +677,7 @@
     }
 
     async onLoad(options) {
-      const page = options.page
-      let cardResponse = await wepy.request('https://www.easy-mock.com/mock/5adecfefc57e6f08ff16594b/example/starbucks')
-      let title = cardResponse.data.data.List[page].title
-
-      this.listPic = cardResponse.data.data.listPic[page].pagelist
-      this.starbucksList = cardResponse.data.data.starbucksList
-      this.titlePic = cardResponse.data.data.listPic[page].pagelist[0].url
-      this.$apply()
-      wepy.setNavigationBarTitle({
-        title: title
-      })
+      this.getTheme(options.id)
     }
   }
 </script>
