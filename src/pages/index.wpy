@@ -6,6 +6,7 @@
 
   .swiper .slide-image{
     width: 100%;
+    height: 500rpx;
   }
 
   .starbucks-btn{
@@ -18,7 +19,7 @@
     box-shadow:0px 0px 10px #e0e0e0;
     background-color: #fff;
     margin-top: 50rpx;
-    margin-bottom: 50rpx;
+    margin-bottom: 43rpx;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -41,15 +42,13 @@
   }
 
   .title{
-    font-size: 30rpx;
+    font-size: 27rpx;
     padding-left: 40rpx;
-    letter-spacing: 4rpx;
+    font-color: #515151;
   }
 
   .sbList{
     margin-top: 22rpx;
-    background-color: #f9f9f9;
-
   }
   .starbucks-list{
     height: 253rpx;
@@ -57,8 +56,8 @@
     background-color: #fff;
     margin-bottom: 60rpx;
     border-radius: 15rpx;
-    -webkit-box-shadow:0px 2px 8px #858585;
-    box-shadow:0px 2px 8px #858585;
+    -webkit-box-shadow:0px 2px 8px #e0e0e0;
+    box-shadow:0px 2px 8px #e0e0e0;
 
   }
   .starbucks-list:nth-child(n){
@@ -82,11 +81,9 @@
     text-align: center;
     display: block;
     margin: 7rpx auto;
-    letter-spacing: 5rpx;
   }
 
   .starbucks-foot{
-    background-color: #f9f9f9;
     height: 245rpx;
     width: 100%;
   }
@@ -94,8 +91,8 @@
   .starbucks-foot .cole-img{
     position: relative;
     background-color: #fff;
-    width: 87rpx;
-    height: 87rpx;
+    width: 79rpx;
+    height: 79rpx;
     border-radius: 50%;
     display: block;
     margin: 0 auto;
@@ -105,10 +102,11 @@
 
   .starbucks-foot image{
     position: absolute;
-    left: 4rpx;
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 40rpx;
+    left: 11rpx;
+    width: 56rpx;
+    height: 52rpx;
+    border-radius: 38rpx;
+    top: 13rpx;
   }
 
   .starbucks-foot .text{
@@ -121,7 +119,7 @@
   }
 
   .starbucks-foot text{
-    font-size: 23rpx;
+    font-size: 25rpx;
     color: #299e6d;
     text-decoration: underline;
   }
