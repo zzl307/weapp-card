@@ -1,7 +1,7 @@
 {
 	"description": "weapp card project",
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": false,
 		"postcss": false,
 		"minified": false,
@@ -11,5 +11,6 @@
 	"appid": "wx9823531053a7f223",
 	"projectname": "weapp-card",
 	"miniprogramRoot": "./dist",
+	"libVersion": "2.2.2",
 	"condition": {}
 }
