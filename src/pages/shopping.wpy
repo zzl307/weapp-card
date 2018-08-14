@@ -439,7 +439,6 @@
             <text class="know">隐私权条款</text>
         </navigator>
     </view>
-    <!-- <view class="dianzi"></view> -->
 
     <view class="starbucks-foot">
         <text class="number">{{ number }} 份礼品</text>
@@ -453,9 +452,7 @@
             <image src="{{ picimg }}"></image>
         </view>
         <view scroll-y class="jieshao">
-            <!-- <view class="dianzi2"> -->
             <image class="cha" @tap="chaxx" src='../../images/close.png' />
-            <!-- </view> -->
             <scroll-view scroll-y class="introduce-box" data-index="{{ index }}">
                 <text class="thename">{{ thename }}</text>
                 <text class="themoney">￥{{ themoney }}</text>
